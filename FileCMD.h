@@ -4,6 +4,7 @@
 #include <string>
 #include <locale>
 #include <codecvt>
+#include <fstream> 
 using namespace std;
 enum colors {
     black = 0, electric = 1, leaf = 2, lightblue = 3, red = 4, darkpurple = 5, gold = 6, lightgrey = 7, grey = 8, blue = 9, green = 10, aqua = 11, lightred = 12, purple = 13, yellow = 14, white = 15,
@@ -24,9 +25,9 @@ private:
     {
         SetConsoleTextAttribute(consolehwnd, lightblue);
         underline();
-        cout << "|" << "\t\t\t" << "-----------------------------------------------------------------\t\t" << "    |" << endl
-            << "|" << "\t\t\t" << "|   \t Welcome To CMD File Manger (*^_^*)\t\t\t|\t\t" << "    |" << endl
-            << "|" << "\t\t\t" << "-----------------------------------------------------------------\t\t" << "    |" << endl;
+        cout << "|" << "\t\t\t" << "-----------------------------------------------------------------\t\t" << "     |" << endl
+            << "|" << "\t\t\t" << "|   \t Welcome To CMD File Manger (*^_^*)\t\t\t|\t\t" << "     |" << endl
+            << "|" << "\t\t\t" << "-----------------------------------------------------------------\t\t" << "     |" << endl;
         underline();
     }
     void listDir(const wstring& path) {
@@ -156,6 +157,20 @@ private:
             return false;
         }
     }
+
+    bool Touch_File(const wstring& filename) {
+        ofstream file(filename);
+        if (file.is_open()) {
+            file.close();
+            return true;
+        }
+        else {
+            wcerr << L"Failed to create file." << endl;
+            return false;
+        }
+    }
+
+
 public:
     void Execute()
     {
@@ -170,12 +185,13 @@ public:
             wcout <<"\t\t\tEnter A Command : - \n"
                 << "\t\t\t1- ls\n"
                 << "\t\t\t2- mkdir\n"
-                << "\t\t\t3- cp\n"
-                << "\t\t\t4- mv\n"
-                << "\t\t\t5- rm\n"
-                << "\t\t\t6- cd\n"
-                << "\t\t\t7- clear\n"
-                << "\t\t\t8- Exit\n"
+                << "\t\t\t3- Touch\n"
+                << "\t\t\t4- cp\n"
+                << "\t\t\t5- mv\n"
+                << "\t\t\t6- rm\n"
+                << "\t\t\t7- cd\n"
+                << "\t\t\t8- clear\n"
+                << "\t\t\t9- Exit\n"
                 << "\t\t\tEnter Your CMD : ";
             wcin >> command;
 
@@ -186,6 +202,7 @@ public:
                 wstring newDirName;
                 wcout << L"Enter directory name: ";
                 wcin >> newDirName;
+                getline(wcin, newDirName);
                 if (MakeDir(currentDirectory + L"\\" + newDirName))
                 {
                     SetConsoleTextAttribute(consolehwnd, green);
@@ -197,7 +214,22 @@ public:
                     wcout << L"Failed to create directory." << endl;
                 }
             }
-            else if (command == L"cp"||command==L"3") {
+            else if (command == L"touch" || command == L"7") { 
+                wstring fileName;
+                wcout << L"Enter file name: ";
+                wcin >> fileName;
+                if (Touch_File(currentDirectory + L"\\" + fileName))
+                {
+                    SetConsoleTextAttribute(consolehwnd, green);
+                    wcout << L"File created successfully." << endl;
+                }
+                else
+                {
+                    SetConsoleTextAttribute(consolehwnd, lightred);
+                    wcout << L"Failed to create file." << endl;
+                }
+            }
+            else if (command == L"cp"||command==L"4") {
                 wstring source, destination;
                 wcout << L"Enter source file path: ";
                 wcin >> source;
@@ -214,12 +246,12 @@ public:
                     wcout << L"Failed to copy file." << endl;
                 }
             }
-            else if (command == L"mv"||command==L"4") {
+            else if (command == L"mv"||command==L"5") {
                 wstring source, destination;
                 wcout << L"Enter source file path: ";
-                wcin >> source;
+                wcin>>source;
                 wcout << L"Enter destination file path: ";
-                wcin >> destination;
+                wcin>>destination;
                 if (Move_File(source, destination))
                 {
                     SetConsoleTextAttribute(consolehwnd, green);
@@ -231,7 +263,7 @@ public:
                     wcout << L"Failed to move file." << endl;
                 }
             }
-            else if (command == L"rm"||command==L"5") {
+            else if (command == L"rm"||command==L"6") {
                 wstring filePath;
                 wcout << L"Enter file path: ";
                 wcin >> filePath;
@@ -246,7 +278,7 @@ public:
                     wcout << L"Failed to delete file." << endl;
                 }
             }
-            else if (command == L"cd" || command == L"6") {
+            else if (command == L"cd" || command == L"7") {
                 wstring newDir;
                 wcout << L"Enter directory path: ";
                 // Clear the input buffer
@@ -266,12 +298,12 @@ public:
                     wcerr << L"Invalid directory path or directory does not exist." << endl;
                 }
             }
-            else if (command == L"clear"||command==L"7")
+            else if (command == L"clear"||command==L"8")
             {
                 system("cls");
                 Interface();
             }
-            else if (command == L"exit"||command==L"8") {
+            else if (command == L"exit"||command==L"9") {
                 break;
             }
             else {
