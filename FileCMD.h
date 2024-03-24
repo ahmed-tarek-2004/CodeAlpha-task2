@@ -133,8 +133,6 @@ private:
             wcerr << L"Failed to move file. Error code: " << GetLastError() << endl;
             return false;
         }
-
-        // Case 4: Source and destination paths are the same
         if (source == destination) {
             wcout << L"Source and destination paths are the same." << endl;
             return true;
@@ -181,7 +179,6 @@ public:
 
             SetConsoleTextAttribute(consolehwnd, white);
             wcout << L"\nCurrent Directory : " << currentDirectory << endl;
-           // wcout << L"Enter a command (ls, mkdir, cp, mv, rm, cd, exit): ";
             wcout <<"\t\t\tEnter A Command : - \n"
                 << "\t\t\t1- ls\n"
                 << "\t\t\t2- mkdir\n"
@@ -311,6 +308,5 @@ public:
                 SetConsoleTextAttribute(consolehwnd, lightred);
             }
         }
-
     }
 };
